@@ -5,31 +5,152 @@
                 <h3 class="card-title">USUARIOS</h3>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="rm_type_id" class="form-label">Base de Datos a Consultar</label>
-                            <div class="input-group text">
-                                <span class="input-group-append">
-                                    <span class="input-group-text bg-ligh d-block">
-                                        <i class="fa-solid fa-list-ul"></i>
-                                    </span>
-                                </span>
-                                <!-- <select class="form-control" id="users_database_id" v-model="inputs.users_database_id" :disabled="inputs.users_database_id"> -->
-                                <select class="form-control" id="users_database_id">
-                                    <option default value="0" disabled>Seleccione la Base de Datos a Consultar</option>
-                                    <option value="1">Matriz de Riesgo</option>
-                                    <!-- <option v-for="rmType in selectors.sRm_Type" :value="rmType[0]" :key="rmType[0]">
-                                        {{ rmType[1] }}
-                                    </option> -->
+                <div class="row mt-3">
+                    <div class="col-9 mb-2">
+                        <div v-if="isLoading">
+                            <AnimatedPlaceholder height="100%" width="15%" borderRadius="5%" style="margin-top: 4%;"/>
+                        </div>
+                        <div v-else>
+                            <div class="form-floating">
+                                <select class="form-select" id="users_database_id" v-model="inputs.database">
+                                <!-- <select class="form-control" id="users_database_id"> -->
+                                    <option selected disabled>Seleccione la Base de Datos a Consultar</option>
+                                    <option v-for="database in selectors.databases" :value="database.id" :key="database.id">
+                                        {{ database.description }}
+                                    </option>
                                 </select>
+                                <label for="users_database_id" class="form-label">Base de Datos a Consultar</label>
                             </div>
+                        </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-3">
                         <!-- <button type="button" class="btn-search search-users" act="search" @click="searchUsers">Buscar Usuarios</button> -->
-                        <button type="button" class="btn-search search-users" act="search">Buscar Usuarios</button>
+                        <button type="button" class="btn-search search-users" act="search" @click="searchUsers"><b>Buscar Usuarios</b></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
+<style scoped>
+    .btn-search {
+        width: auto;
+        padding: 15px 15px 40px 15px;
+        height: 40px;
+        font-size: 1.1em;
+        cursor: pointer;
+        background-color: #133573;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        transition: all .4s;
+    }
+
+    .btn-search:hover {
+        border-radius: 5px;
+        transform: translateY(-10px);
+        box-shadow: 0 7px 0 -2px #d11cfd,
+        0 15px 0 -4px #3a15e8,
+        0 16px 10px -3px #3a15e8;
+    }
+
+    .btn-search:active {
+        transition: all 0.2s;
+        transform: translateY(-5px);
+        box-shadow: 0 2px 0 -2px #d11cfd,
+        0 8px 0 -4px #3a15e8,
+        0 12px 10px -3px #3a15e8;
+    }
+</style>
+
+<script setup>
+    import { ref, onBeforeMount, reactive } from 'vue'
+
+    /**
+     * IMPORT ANIMATIONS
+     */
+    import AnimatedPlaceholder from '@/components/animated/AnimatedPlaceholder'
+
+    /**
+     * IMPORT FUNCTION TO SEND REQUEST
+     */
+    import { sendRequest, sendPOSTRequest } from '@/utils/requests';
+
+    /**
+     * SELECTORS
+     */
+    const selectors = reactive({
+        databases: ref([])
+    })
+
+    /**
+     * INPUTS
+     */
+    const inputs = reactive({
+        database: ref([])
+    })
+
+    /**
+     * LOADER
+     */
+    const isLoading = ref(true);
+
+    /**
+     * GET DATA
+     */
+    onBeforeMount(async () => {
+        try {
+            /**
+             * GET DATA FROM BE
+             */
+            const response = await sendRequest('get', 'api/get_databases_names', '')
+
+            /**
+             * VERIFY IF REQUEST WAS SUCCESSFUL
+             */
+             if(response.status){
+                selectors.databases = response.data
+             }
+
+            /**
+             * TURN OFF LOADER
+             */
+            isLoading.value = false;
+
+        } catch(error) {
+            console.log(error);
+        }
+    })
+
+    /**
+     * FUNCTION TO SEARCH USERS
+     */
+    const searchUsers = async () => {
+        try {
+            /**
+             * VERIFY IF DATABASE IS SELECTED
+             */
+            if(inputs.database > 0){
+                /**
+             * TURN ON LOADING
+             */
+            isLoading.value = true;
+
+            /**
+             * GET DATA FROM BE
+             */
+            //  const response = await sendRequest('post', 'api/get_all_users_with_roles', {database_id: inputs.database})
+             const response = await sendRequest('post', 'api/get_all_users_with_roles', {database_id: inputs.database})
+                // await sendPOSTRequest({database_id: inputs.database})
+            /**
+             * TURN OFF LOADING
+             */
+            isLoading.value = false;
+            }
+        }
+        catch(error) {
+            console.log(error);
+        }
+    }
+</script>
