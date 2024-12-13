@@ -6,7 +6,11 @@ import Swal from 'sweetalert2';
 /**
  * EXPORT FUNCTION TO SHOW ALERT
  */
+<<<<<<< HEAD
 export function showAlert(title, icon, message, item = ''){
+=======
+export function showAlert(title, icon, message, item){
+>>>>>>> dcb856fdf61a41ecc70656bab0c5800eb206413c
 
     /**
      * SHOW MESSAGE
@@ -38,6 +42,7 @@ export default function sessionShow() {
         icon: "success",
         title: "Bienvenido al Sistema"
       });
+<<<<<<< HEAD
 }
 
 /**
@@ -58,4 +63,6 @@ export async function showConfirmation(title, icon, message, item = ''){
   })
 
   return (result.isConfirmed) ? true : false;
+=======
+>>>>>>> dcb856fdf61a41ecc70656bab0c5800eb206413c
 }

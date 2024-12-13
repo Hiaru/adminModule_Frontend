@@ -3,7 +3,11 @@
  */
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/auth/LoginView.vue";
+<<<<<<< HEAD
 import UsersTableView from "../views/UsersTableView.vue";
+=======
+import DashboardView from "../views/DashboardView.vue";
+>>>>>>> dcb856fdf61a41ecc70656bab0c5800eb206413c
 import { useAuthStore } from "@/store/auth";
 
 const routes = [
@@ -14,8 +18,13 @@ const routes = [
   },
   {
     path: "/",
+<<<<<<< HEAD
     name: "usersTable",
     component: UsersTableView,
+=======
+    name: "dashboard",
+    component: DashboardView,
+>>>>>>> dcb856fdf61a41ecc70656bab0c5800eb206413c
   },
   // {
   //   path: "/about",
